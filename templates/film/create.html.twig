@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% form_theme formFilm 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+
+Total de film actuellement : {{total}}
+
+    <h1> Création d'un film </h1>
+
+    {{ form_start(formFilm) }}
+
+    {{ form_widget(formFilm) }}
+
+    <button type="submit" class="btn btn-success"> 
+    {% if button %}
+        Modifier le film
+    {% else %}
+        Ajouter le film
+    {% endif %}
+    </button>
+
+    {{ form_end(formFilm) }}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Film !{% endblock %}
+
+{% block body %}
+
+<p> Nombre de film actuellement : {{ total }} </p>
+
+    {% for film in films %}
+        <section class="oeuvre">
+            <article>
+                <h2> {{film.title}} </h2>
+                <div class="metadata"> {{ film.createdAt | date('d/m/Y') }} {{film.createdAt | date('H:i')}} </div>
+                <div class="content">
+                    {{ film.content | raw }}
+                    <img src="{{ film.image }}">
+                </div>
+                <a href="{{ path('film_show', {'id': film.id }) }}" class="btn btn-primary"> Lire la suite </a>
+            </article>
+        </section>
+    {% endfor %}
+    
+        <ul class="pagination pagination-lg">
+            <li class="page-item disabled">
+            <a class="page-link">{{knp_pagination_render(films)}}</a>
+            </li>
+        </ul>
+        
+{% endblock %}
