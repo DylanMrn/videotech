@@ -22,9 +22,16 @@ class FilmController extends AbstractController
     * @Route("/film", name ="film")
     */
     public function index(FilmRepository $repo, Request $request, PaginatorInterface $paginator)
-    {        
+    {
+        
         $films = $repo->findAll();
-        $total = count($films);
+        if(!$films){
+            $total = 0;
+        }
+        else {
+            $total = count($films);
+        }
+        
 
         $pages = $paginator->paginate(
             $films,
@@ -101,7 +108,8 @@ class FilmController extends AbstractController
 
         return $this->render('film/create.html.twig', [
             'formFilm' => $form->createView(),
-            'button' => $film->getId() !== null
+            'button' => $film->getId() !== null,
+            'total' => $total
         ]);
     }
 
