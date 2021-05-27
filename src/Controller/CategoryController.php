@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Film;
 use App\Entity\Category;
+use App\Form\SearchType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -31,10 +32,15 @@ class CategoryController extends AbstractController
             4
         );
 
+        //$search = new SearchType();
+        //$form = $this->createForm(SearchType::class, $search);
+        //$form->handleRequest($request);
+
         return $this->render('category/index.html.twig', [
             'controller_name' => 'CategoryController',
             'categories' => $categories,
-            'total' => $total
+            'total' => $total,
+            //'form' => $form->createView()
         ]);
     }
 

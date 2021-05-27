@@ -15,6 +15,7 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class FilmController extends AbstractController
 {
@@ -90,7 +91,7 @@ class FilmController extends AbstractController
                         'attr' => [
                             'placeholder' => "description du film" ]
                      ])
-                     ->add('image')    
+                     ->add('image', FileType::class)    
                      ->getForm();
 
                      $form->handleRequest($request);
