@@ -116,15 +116,23 @@ class FilmController extends AbstractController
     /**
     * @Route("/film/{id}/delete", name ="film_delete")
     */
-    public function delete($id) {
+    public function delete($id, EntityManagerInterface $manager) {
         $repo = $this->getDoctrine()->getRepository(Film::class);
+
+        $films = $repo->findAll();
+        $total = count($films);
 
         $repo = $repo->find($id);
 
-        $repo->remove($repo);
-        $repo->flush();
+        $manager->remove($repo);
+        dump($repo);
 
-        return $this->render('film/show.html.twig');
+        $manager->flush();
+
+        return $this->render('film/index.html.twig', [
+            'total' => $total,
+            'films' => $films
+        ]);
     }
 
     /**
