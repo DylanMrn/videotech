@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1> {{ title }} </h1>
-    <p> Liste des films </p>
-    Total de film actuellement : {{total}}
+    <div class="row">
+        <h1> {{ title }} </h1>
+        <p> Liste des films </p>
+        Total de film actuellement : {{total}}
+        <p> Votre rôle actuel : {{ user.roles[0] }} </p>
+    </div>
+    {{ form_start(formRole) }}
+    {{ form_widget(formRole.change, { 'label': 'Changer de rôle' }) }}
+    {{ form_end(formRole) }}
 {% endblock body %}

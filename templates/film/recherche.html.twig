@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="form-group">
+        <label for="exampleSelect1" class="form-label mt-4">Catégorie</label>
+        <select class="form-select" id="exampleSelect1">
+            {% for categorie in categories %}
+                <option>{{categorie.title}}</option>
+            {% endfor %}
+        </select>
+        <input class="form-control me-sm-2" type="text" placeholder="Search">
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+            <th scope="col"> Titre</th>
+            <th scope="col"> Description </th>
+            <th scope="col"> Image</th>
+            <th scope="col"> Categorie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for film in films %}
+                <tr class="table-warning">
+                <th scope="row"> {{film.title}} </th>
+                <td>{{film.content | raw}}</td>
+                <td> {{film.category.title }}</td>
+                <td>{{film.image}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock body %}

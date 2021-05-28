@@ -48,9 +48,9 @@ class CategoryController extends AbstractController
     * @Route("/category/new", name="category_create")
     */
     public function create(Request $request, EntityManagerInterface $manager)
-    {        
+    {
+        $user = $this->getUser();
         $category = new Category();
-
         $form = $this->createFormBuilder($category)
                      ->add('title', TextType::class, [
                         'attr' => [
@@ -62,8 +62,6 @@ class CategoryController extends AbstractController
 
         $form->handleRequest($request);
 
-        dump($category);
-
         if($form->isSubmitted() && $form->isValid()){
             $manager->persist($category);
             $manager->flush();
@@ -72,7 +70,8 @@ class CategoryController extends AbstractController
         }
 
         return $this->render('category/create.html.twig', [
-            'formCategory' => $form->createView()
+            'formCategory' => $form->createView(),
+            'user' => $user
         ]);
     }
 }

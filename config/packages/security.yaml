@@ -41,5 +41,6 @@ security:
         - { path: '^/film', roles: 'ROLE_USER' }
         - { path: '/$', roles: 'ROLE_USER' }
         - { path: '^/category', roles: 'ROLE_USER' }
+        - { path: '^/recherche', roles: 'ROLE_USER' }
         - { path: '^/admin', roles: 'ROLE_ADMIN' }
         - { path: '^/login', roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }

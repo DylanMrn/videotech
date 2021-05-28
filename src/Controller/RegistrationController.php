@@ -30,6 +30,8 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $user->setRoles(['ROLE_USER']);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -46,5 +48,11 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+    #[Route('/forgot', name: 'forgot')]
+    public function forgot(){
+        //Faire un formulaire + ajouter la validation d'un captcha
+        
+        return $this->render('registration/forgot.html.twig');
     }
 }

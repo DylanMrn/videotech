@@ -9,6 +9,7 @@ use App\Entity\Film;
 use App\Entity\Category;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\FilmRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -32,7 +33,6 @@ class FilmController extends AbstractController
         else {
             $total = count($films);
         }
-        
 
         $pages = $paginator->paginate(
             $films,
@@ -50,13 +50,38 @@ class FilmController extends AbstractController
     /**
     * @Route("/", name ="home")
     */
-    public function home(FilmRepository $repo) {
+    public function home(FilmRepository $repo, UserRepository $user, Request $request, EntityManagerInterface $manager) {
         $films = $repo->findAll();
         $total = count($films);
 
+        //$role = $user->findBy($user[0]);
+        $user = $this->getUser();
+
+        $form = $this->createFormBuilder($user)
+                     ->add('change', SubmitType::class)
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            if($user->getRoles() == "['ROLE_USER']"){
+                $user->setRoles(['ROLE_ADMIN']);
+            } else {
+                $user->setRoles(['ROLE_USER']);
+            }
+
+            $manager->persist($user);
+            $manager->flush();
+
+            return $this->redirectToRoute('home');
+        }
+
         return $this->render('film/home.html.twig', [
             'title' => 'Page des films',
-            'total' => $total
+            'total' => $total,
+            'user' => $user,
+            'formRole' => $form->createView()
         ]);
     }
 
@@ -94,18 +119,18 @@ class FilmController extends AbstractController
                      ->add('image', FileType::class)    
                      ->getForm();
 
-                     $form->handleRequest($request);
+            $form->handleRequest($request);
 
-                    if($form->isSubmitted() && $form->isValid()){
-                        if(!$film->getId()){
-                            $film->setCreatedAt(new \DateTime());
-                        }
+            if($form->isSubmitted() && $form->isValid()){
+                if(!$film->getId()){
+                    $film->setCreatedAt(new \DateTime());
+                }
 
-                        $manager->persist($film);
-                        $manager->flush();
+                $manager->persist($film);
+                $manager->flush();
 
-                        return $this->redirectToRoute('film_show', ['id'=> $film->getId()]);
-                    }
+                return $this->redirectToRoute('film_show', ['id'=> $film->getId()]);
+            }
 
         return $this->render('film/create.html.twig', [
             'formFilm' => $form->createView(),
@@ -130,10 +155,7 @@ class FilmController extends AbstractController
 
         $manager->flush();
 
-        return $this->render('film/index.html.twig', [
-            'total' => $total,
-            'films' => $films
-        ]);
+        return $this->redirectToRoute('film');
     }
 
     /**
@@ -149,4 +171,35 @@ class FilmController extends AbstractController
         ]);
     }
 
+    /**
+    * @Route("/recherche", name ="recherche")
+    */
+    public function recherche(Request $request) {
+        $repo = $this->getDoctrine()->getRepository(Film::class);
+        $categorie = $this->getDoctrine()->getRepository(Category::class);
+
+        $films = $repo->findAll();
+        $categories = $categorie->findAll();
+
+        /*$form = $this->createFormBuilder($recherche)
+                     ->add('title', TextType::class)
+                     ->add('categorie', )
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $recherche = $repo->findOneBy([]);
+
+            return $this->render('film/recherche.html.twig', [
+                'recherche' => $recherche,
+                'categories' => $categories
+            ]);
+        }*/
+
+        return $this->render('film/recherche.html.twig', [
+            'films' => $films,
+            'categories' => $categories
+        ]);
+    }
 }
