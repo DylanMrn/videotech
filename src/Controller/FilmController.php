@@ -56,6 +56,7 @@ class FilmController extends AbstractController
 
         //$role = $user->findBy($user[0]);
         $user = $this->getUser();
+        dump($user);
 
         $form = $this->createFormBuilder($user)
                      ->add('change', SubmitType::class)
@@ -89,7 +90,7 @@ class FilmController extends AbstractController
     * @Route("/film/new", name="film_create")
     * @Route("/film/{id}/edit", name="film_edit")
     */
-    public function create(FilmRepository $repo, Film $film = null, Request $request, EntityManagerInterface $manager){
+    public function create(FilmRepository $repo, Film $film = null, Request $request, EntityManagerInterface $manager, \Swift_Mailer $mailer){
 
         $films = $repo->findAll();
         $total = count($films);
@@ -124,12 +125,25 @@ class FilmController extends AbstractController
             if($form->isSubmitted() && $form->isValid()){
                 if(!$film->getId()){
                     $film->setCreatedAt(new \DateTime());
+
+                    $message = (new \Swift_Message('Hello Email'))
+                    ->setFrom('noreply@test.fr')
+                    ->setTo('noreply@test.fr')
+                    ->setBody(
+                        $this->renderView(
+                           'emails/create.html.twig',
+                            ['film' => $film ]
+                        ),
+                        'text/html'
+                    );
+                $mailer->send($message);
+
                 }
 
                 $manager->persist($film);
                 $manager->flush();
 
-                return $this->redirectToRoute('film_show', ['id'=> $film->getId()]);
+                return $this->redirectToRoute('film_show', ['id'=> $film->getId(), 'category'=>$film->getCategory()->getTitle(), 'title'=>$film->getTitle()]);
             }
 
         return $this->render('film/create.html.twig', [
@@ -142,13 +156,25 @@ class FilmController extends AbstractController
     /**
     * @Route("/film/{id}/delete", name ="film_delete")
     */
-    public function delete($id, EntityManagerInterface $manager) {
+    public function delete($id, EntityManagerInterface $manager, \Swift_Mailer $mailer) {
         $repo = $this->getDoctrine()->getRepository(Film::class);
 
         $films = $repo->findAll();
         $total = count($films);
 
         $repo = $repo->find($id);
+
+        $message = (new \Swift_Message('Hello Email'))
+                    ->setFrom('noreply@test.fr')
+                    ->setTo('noreply@test.fr')
+                    ->setBody(
+                        $this->renderView(
+                           'emails/delete.html.twig',
+                            ['film' => $repo ]
+                        ),
+                        'text/html'
+                    );
+        $mailer->send($message);
 
         $manager->remove($repo);
         dump($repo);
@@ -159,12 +185,15 @@ class FilmController extends AbstractController
     }
 
     /**
-    * @Route("/film/{id}", name ="film_show")
+    * @Route("/{category}/{title}-{id}", name ="film_show")
     */
-    public function show($id) {
-        $repo = $this->getDoctrine()->getRepository(Film::class);
+    public function show($id, $category, $title) {
 
-        $film = $repo->find($id);
+        $id = explode("-", $id);
+        $total = count($id) -1;
+
+        $repo = $this->getDoctrine()->getRepository(Film::class);
+        $film = $repo->find($id[$total]);
 
         return $this->render('film/show.html.twig', [
             'film' => $film,
