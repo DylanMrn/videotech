@@ -49,6 +49,7 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
         ]);
     }
+    
     #[Route('/forgot', name: 'forgot')]
     public function forgot(){
         //Faire un formulaire + ajouter la validation d'un captcha
