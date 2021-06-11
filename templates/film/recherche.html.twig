@@ -3,13 +3,16 @@
 {% block body %}
 
     <div class="form-group">
-        <label for="exampleSelect1" class="form-label mt-4">Catégorie</label>
-        <select class="form-select" id="exampleSelect1">
-            {% for categorie in categories %}
-                <option>{{categorie.title}}</option>
-            {% endfor %}
-        </select>
-        <input class="form-control me-sm-2" type="text" placeholder="Search">
+        {{ form_start(formSearch) }}
+        <div class='form-row'>
+            <div class="col">
+           {{ form_widget(formSearch) }}
+           </div>
+           <div class="col">
+            <button type="submit" class="btn-primary btn"> Search </button>
+            </div>
+        </div>
+        {{ form_end(formSearch) }}
     </div>
 
     <table class="table table-hover">

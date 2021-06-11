@@ -210,25 +210,27 @@ class FilmController extends AbstractController
         $films = $repo->findAll();
         $categories = $categorie->findAll();
 
-        /*$form = $this->createFormBuilder($recherche)
-                     ->add('title', TextType::class)
-                     ->add('categorie', )
-                     ->getForm();
+        $form2 = $this->createFormBuilder()
+            ->add('title', TextType::class)
+            ->add('categorie', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'title'
+            ])
+            ->getForm();
 
-        $form->handleRequest($request);
+            $form2->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
-            $recherche = $repo->findOneBy([]);
-
-            return $this->render('film/recherche.html.twig', [
-                'recherche' => $recherche,
-                'categories' => $categories
-            ]);
-        }*/
+            if($form2->isSubmitted() && $form2->isValid()){
+                dump($form2); exit;
+                dump($request->request->get('categorie')); exit;
+                $film = $repo->findBy(array('title' => $form2['title']));
+                dump($film);
+            }
 
         return $this->render('film/recherche.html.twig', [
             'films' => $films,
-            'categories' => $categories
+            'categories' => $categories,
+            'formSearch' => $form2->createView()
         ]);
     }
 }
