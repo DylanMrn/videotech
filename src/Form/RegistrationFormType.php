@@ -44,9 +44,6 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('captcha', RecaptchaSubmitType::class, [
-                'label' => 'Valider'
-            ])
         ;
     }
 
