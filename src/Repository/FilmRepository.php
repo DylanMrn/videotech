@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Film;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,15 +37,16 @@ class FilmRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Film
-    {
+    public function FindByTitle($title, $category)
+    {  
+        // select * from Film where Film.title LIKE '%aladdin%';
         return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
-            ->setParameter('val', $value)
+            ->Where('f.title LIKE :tit')
+            ->andWhere('f.category = :cat')
+            ->setParameter('tit', "%".$title."%")
+            ->setParameter('cat', $category)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
 }

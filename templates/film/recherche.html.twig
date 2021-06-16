@@ -14,7 +14,9 @@
         </div>
         {{ form_end(formSearch) }}
     </div>
-
+    {% if message is not empty %}
+        <div> {{ message }} </div>
+    {% endif %}
     <table class="table table-hover">
         <thead>
             <tr>
@@ -25,14 +27,25 @@
             </tr>
         </thead>
         <tbody>
-            {% for film in films %}
-                <tr class="table-warning">
-                <th scope="row"> {{film.title}} </th>
-                <td>{{film.content | raw}}</td>
-                <td> {{film.category.title }}</td>
-                <td>{{film.image}}</td>
-                </tr>
-            {% endfor %}
+            {% if recherches is not empty %}
+                {% for recherche in recherches %}
+                    <tr class="table-warning">
+                    <th scope="row"> {{recherche.title}} </th>
+                    <td> {{recherche.content | raw}}</td>
+                    <td> {{recherche.category.title }}</td>
+                    <td>{{recherche.image}}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                {% for film in films %}
+                    <tr class="table-warning">
+                    <th scope="row"> {{film.title}} </th>
+                    <td>{{film.content | raw}}</td>
+                    <td> {{film.category.title }}</td>
+                    <td>{{film.image}}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 {% endblock body %}

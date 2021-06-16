@@ -206,6 +206,7 @@ class FilmController extends AbstractController
     public function recherche(Request $request) {
         $repo = $this->getDoctrine()->getRepository(Film::class);
         $categorie = $this->getDoctrine()->getRepository(Category::class);
+        $recherche = null; $message = "";
 
         $films = $repo->findAll();
         $categories = $categorie->findAll();
@@ -221,16 +222,20 @@ class FilmController extends AbstractController
             $form2->handleRequest($request);
 
             if($form2->isSubmitted() && $form2->isValid()){
-                dump($form2); exit;
-                dump($request->request->get('categorie')); exit;
-                $film = $repo->findBy(array('title' => $form2['title']));
-                dump($film);
+                $title = $request->request->get('form')['title'];
+                $categorie = $request->request->get('form')['categorie']; 
+                $recherche = $repo->FindByTitle($title, $categorie);
+                if(empty($recherche)){
+                    $message = "pas de résultats";
+                }
             }
 
         return $this->render('film/recherche.html.twig', [
             'films' => $films,
             'categories' => $categories,
-            'formSearch' => $form2->createView()
+            'formSearch' => $form2->createView(),
+            'recherches' => $recherche,
+            'message' => $message
         ]);
     }
 }
