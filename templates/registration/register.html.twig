@@ -17,7 +17,16 @@
         {{ form_row(registrationForm.agreeTerms) }}
         {{ form_widget(registrationForm.captchaCode) }}
 
-        <button type="submit" class="btn btn-lg btn-primary">Valider </button>
+        {% set formErrors = registrationForm.vars.errors.form.getErrors(true) %}
+
+        {% if formErrors|length %}
+            {% for error in formErrors %}
+                {{ error.message }}
+            {% endfor %}
+        {% endif %}
+
+        <button type="submit" class="btn btn-lg btn-primary text-center">Valider </button>
+
     {{ form_end(registrationForm) }}
 
     <a class="nav-link" href="/login"> Connexion </a>
